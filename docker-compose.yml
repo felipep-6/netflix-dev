@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  frontend:
+    depends_on:
+      - backend
+    image: "felipeapdocker/netflix-frontend:v1"
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+
+  backend:
+    depends_on:
+      - db
+    image: "felipeapdocker/netflix-backend:v1"
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    environment: 
+      DB_URL: mongodb://db/vidly
+    command: ./docker-entrypoint.sh
+
+  db:
+    image: mongo:4.0-xenial
+    ports:
+      - 27017:27017
+    volumes:
+      - vidly:/data/db
+
+volumes:
+  vidly:
